@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+  <script>var und = _;</script>
+  <script src="partial.js"></script>
+</head>
+<body>
+<script>
+  _.pipe(
+      function() {
+          return this.a;
+      },
+      console.log,
+      function() {
+          this.b = 2;
+          return this;
+      },
+      console.log
+  ).call({a: 1});
+
+  var obj = {
+      a: 10,
+      method1: _.pipe(
+          function() {
+              return this.a;
+          },
+          console.log,
+          function() {
+              this.b = 2;
+              return this;
+          },
+          console.log
+      )
+  };
+  obj.method1();
+
+  _.go(10,
+    function(a) {
+      return a/2
+    }, function(a) {
+      return a + 2;
+      }, console.log);
+  _.go(10,
+    _.l('a => a / 2'),
+    _.l('a => a + 2'),
+    console.log);
+
+  let background = _.partial('css', 'background');
+  background($('body'), 'green');
+
+  let concat = _.partial('concat');
+  concat([1,2], 3);
+
+  let values = _.map(function(v) {
+      return v;
+  });
+  console.log(values({a:1, b:2, c:4}));
+  values = _.map(_.identity);
+  console.log(values({a:1, b:2, c:4}));
+  values = _.map(v=>v);
+  console.log(values({a:1, b:2, c:4}));
+</script>
+</body>
+</html>

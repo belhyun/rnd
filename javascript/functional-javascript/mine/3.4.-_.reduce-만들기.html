@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="jquery.js"></script>
+  <script src="_.3.2.js"></script>
+  <script>
+
+  </script>
+</head>
+<body>
+<script>
+    let log = console.log;
+
+    _.reduce = function(data, iteratee, memo) {
+        _.each(data, function(val, idx, data) {
+            memo = iteratee(memo, val, idx, data);
+        });
+        return memo;
+    };
+    log(_.reduce([[0,1],[2,3],[4,5]], function(memo, val, idx, list) {
+        return memo.concat(val);
+    }, []));
+    function bloop(new_data, body, stopper, is_reduce) {
+        return function(data, iter_predi, opt1) {
+            // _.idtt = function(v) { return v; };
+            iter_predi = iter_predi || _.idtt;
+            let result = new_data(data);
+            let memo = is_reduce ? opt1 : undefined;
+            let keys = isArrayLike(data) ? null : _.keys(data);
+
+            for (let i = 0; len = (keys || data).length, i < len; i++) {
+                let key = keys ? keys[i] : i;
+                memo = is_reduce ?
+                    iter_predi(memo, data[key], key, data) :
+                    iter_predi(data[key], key, data);
+                if (!stopper) body(memo, result, data[key], key);
+                else if (stopper(memo)) return body(memo, result, data[key], key);
+            }
+            return is_reduce ? memo : result;
+        }
+    }
+
+    _.reduce2 = bloop(_.noop, _.noop, undefined, true);
+    _.reduce2([1,2,3], function(memo, val) {
+        return memo + val;
+    }, 0);
+</script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+</head>
+<body>
+<script>
+
+  let log = console.log;
+
+  let add_all = _.partial(_.reduce, _, function(a, b) {
+      return a + b;
+  });
+  log("----add_all----");
+  log(add_all([1,2,3,4]));
+  log("----method-----");
+
+  let method = function(obj, method) {
+      return obj[method].apply(obj, _.rest(arguments, 2));
+  };
+
+  let push = _.partial(method, _, 'push');
+
+
+  let a = [1,2];
+
+  push(a, 3);
+
+  log(a);
+
+  let shift = _.partial(method, _, 'shift');
+
+  shift(a, 3);
+
+  log(a);
+
+  let concat = _.partial(method, _, 'concat');
+
+  log(concat(a, [4, 5]));
+
+  log("----compose----");
+
+  _.compose(log, function(a) {
+      return a - 2;
+  }, function(a) {
+      return a + 5;
+  })(0);
+
+  log("----falsy_values----");
+
+  let falsy_values = _.compose(
+      _.partial(_.isEqual, -1),
+      _.partial(_.findIndex, _, _.identity)
+  );
+  log(falsy_values([1, true, {}]));
+  log(falsy_values([0, 1, false]));
+
+  let some = _.negate(falsy_values);
+
+  log(some([1, true, {}]));
+
+  let every = _.compose(
+      _.partial(_.isEqual, -1),
+      _.partial(_.findIndex, _, _.negate(_.identity))
+  );
+
+  log(every([1, true, {}]));
+  log(every([0, 1, false]));
+
+
+  log("----pipe line----");
+
+  _.pipeline = function() {
+
+      let funs = arguments;
+
+      return function(seed) {
+          return _.reduce(funs, function(l, r) {
+              return r(l);
+          }, seed) ;
+      };
+  };
+
+  let div_square = _.pipeline(
+      function(a) {
+          return a / 2;
+      },
+      function(a) {
+          return a * a;
+      }
+  );
+
+  log(div_square(6));
+
+  _.pipeline = function() {
+      return _.partial(_.reduce, arguments, function(l, r) {
+          return r(l);
+      });
+  };
+
+  div_square = _.pipeline(
+      function(a) {
+          return a / 2;
+      },
+      function(a) {
+          return a * a;
+      }
+  );
+
+  log(div_square(6));
+
+  let users = [];
+  let companies = [];
+
+  function joined_at(attrs) {
+      return _.extend(attrs, {joined_at: new Date()});
+  }
+
+  function greeting(member) {
+      return member.name + " 회원님은 " + member.id + "번째 회원이십니다. 환영합니다.";
+  }
+
+  let join_user = _.pipeline(
+      joined_at,
+      function(member) {
+          users.push(member);
+          member.id = users.length;
+          return member;
+      },
+      greeting
+  );
+
+  let join_company = _.pipeline(
+      joined_at,
+      function(member) {
+          companies.push(member);
+          member.id = companies.length;
+          return member;
+      },
+      greeting
+  );
+
+  // log(join_user({name: "ID"}));
+  // log(join_user({name: "JI"}));
+  // log(join_company({name: "MARPPLE"}));
+
+  function join(table, member) {
+      table.push(member);
+      member.id = table.length;
+      return member;
+  }
+
+  join_user = _.pipeline(
+      joined_at,
+      _.partial(join, users),
+      greeting
+  );
+
+  log(join_user({name: "ID"})) ;
+
+
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jquery.js"></script>
+    <script src="underscore.js"></script>
+</head>
+<body>
+<script>
+    _.mr = function() {
+        arguments._mr = true;
+        return arguments;
+    }
+    _.pipeline = function() {
+        let funs = arguments;
+
+        return function(seed) {
+            return _.reduce(funs,
+            function(l, r) {
+                return l && l._mr ? r.apply(null, l) : r(l);
+            },
+            arguments.length < 2 ? seed : _.mr.apply(null, arguments));
+        }
+    }
+
+    function add(a, b) {
+        return a + b;
+    }
+    function square(a) {
+        return a * a;
+    }
+    function sub(a, b) {
+        return a - b;
+    }
+    let f1 = _.pipeline(
+        add,
+        square,
+        function(a) {
+            return _.mr(a, a / 5);
+        },
+        sub
+    );
+    console.log(f1(3, 2));
+</script>
+</body>

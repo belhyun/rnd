@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+</head>
+<body>
+<div class="box" style="position: relative; background: red; width:50px; height:50px"></div>
+<script>
+  var log = console.log;
+  function skip2(body) {
+      let yes;
+      return function() {
+          return yes || (yes = body.apply(null, arguments));
+      }
+  }
+
+  let go_skip2 = skip2(function() {
+      //alert("skip");
+      return true;
+  });
+
+  go_skip2();
+  go_skip2();
+
+  let method2 = function(method) {
+      let args = _.rest(arguments);
+      return function(obj) {
+          return obj[method].apply(obj, args.concat(_.rest(arguments)));
+      }
+
+  };
+
+  let bg2 = method2('css', 'background-color');
+
+  let $box2 = $(".box");
+
+
+  bg2($box2, 'yellow');
+
+  bg2($box2, 'purple');
+
+  let fillBlack = method2('css', 'background-color', 'black');
+
+  fillBlack($box2);
+
+  let moveRight = method2('animate', {left: '+=200'});
+
+  let moveLeft = method2('animate', {top: '+=200'});
+
+  //moveRight($box2);
+
+  //moveLeft($box2);
+
+  let add_all2 = _.partial(_.reduce, _, function(a, b) {
+      return a + b;
+  });
+
+  log(add_all2([1,2,3,4]));
+  log(add_all2([5,2]));
+
+  let method3 = function(obj, method) {
+      return obj[method].apply(obj, _.rest(arguments, 2));
+  };
+
+  let push = _.partial(method3, _, 'push');
+  let shift = _.partial(method3, _, 'shift');
+
+  let a = [1,2];
+  push(a, 3);
+  log(a);
+
+  let b = method3([1,2,3], 'concat', 4, 5);
+
+  log(b);
+
+  _.compose(log, function(a) {
+      return a - 2;
+  }, function(a) {
+      return a + 5;
+  })(0);
+
+  let falsy_values2 = _.compose(
+      _.partial(_.isEqual, -1),
+      _.partial(_.findIndex, _, _.identity)
+  );
+
+  log(falsy_values2([1, true, {}]));
+  log(falsy_values2(0, "", false));
+
+  let ___ = {};
+
+
+</script>
+
+</body>
+</html>

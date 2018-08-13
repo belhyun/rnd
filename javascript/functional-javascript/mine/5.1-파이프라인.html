@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="jquery.js"></script>
+  <script src="lodash.js"></script>
+  <script src="partial.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+        let log = console.log;
+        log(_.go(10,
+            function(a) {
+                return a * 10
+            },
+            function(a) {
+                return a - 50
+            },
+            function(a) {
+                return a + 10
+            }));
+
+        _.go(10,
+            function(a) {
+                return _.mr(a * 10, 50)
+            },
+            function(a, b) {
+                return a - b
+            },
+            function(a) {
+                return a + 10
+            });
+        log(_.go(_.mr(2, 3),
+            function(a, b) {
+                return a + b;
+            },
+            function(a) {
+                return a * a;
+            }));
+        function add(a, b) {
+            return a + b;
+        }
+        function square(a) {
+            return a * a;
+        }
+        log(_.go(_.mr(2, 3), add, square));
+
+        log(_.go(_.mr(2, 3), (a, b) => a + b, a => a * a));
+
+    </script>
+</body>
+</html>
