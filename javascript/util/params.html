@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script
+src="https://code.jquery.com/jquery-3.3.1.min.js"
+integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+</head>
+<body>
+<script>
+
+    let host = "local.yonsei.ac.kr";
+
+    let queryParam = {
+        a: 1,
+        b: 2
+    };
+
+
+    const objectToQueryString = function() {
+        let args = Array.prototype.slice.call(arguments);
+        host = args[0], obj = args[1];
+        const results = [];
+        _.each(obj, (value, key) => {
+            if (_.isArray(value)) {
+                _.each(value, value => {
+                    results.push(`${key}=${value}`);
+                });
+                return;
+            }
+            results.push(`${key}=${value}`);
+        });
+        if(_.negate(_.isEmpty(results))) {
+            host = host.concat("?");
+        }
+        return host.concat(results.join('&'));
+    };
+
+    console.log(objectToQueryString(host, queryParam));
+
+</script>
+</body>
+</html>
