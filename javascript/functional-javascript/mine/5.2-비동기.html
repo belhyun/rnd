@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="jquery.js"></script>
+  <script src="partial.js"></script>
+</head>
+<body>
+
+<script>
+
+  let log = console.log;
+
+  // log(JSON.stringify(_.map([1,2,3], function(v) {
+  //     return new Date();
+  // })));
+  //
+  // _.map([1,2,3], function(){
+  //     return new Promise(function(resolve) {
+  //         setTimeout(function(){
+  //             resolve(new Date());
+  //         }, 1000);
+  //     });
+  // }).then(function(result) {
+  //     log(JSON.stringify(result));
+  // });
+
+  // _.go([1,2,3], _.map(function(){
+  //         return new Date();
+  //
+  //     }),
+  //     JSON.stringify,
+  //     log
+  // );
+  //
+  // _.go([1,2,3], _.map(_.callback(function(val, i, list, next) {
+  //     setTimeout(function() {
+  //         next(new Date());
+  //     }, 1000);
+  // })),
+  //     JSON.stringify,
+  //     log
+  // );
+
+  let is_1_async = function(a) {
+      return new Promise(function(resolve) {
+          setTimeout(function() {
+              resolve(a == 1);
+          }, 1000);
+      });
+  };
+
+  let is_2_async = function(a) {
+      return new Promise(function(resolve) {
+          setTimeout(function() {
+              resolve(a == 2);
+          }, 1000);
+      });
+  };
+
+  // function test2(a) {
+  //     if (is_1_async(a)) return '1입니다.';
+  //     else if (is_2_async(a)) return '2입니다.';
+  //     else return '1도 아니고 2도 아닙니다.';
+  // }
+  // log(test2(2));
+  //
+  // function test3(a) {
+  //     return is_1_async(a).then(function(bool) {
+  //        if (bool) return '1입니다.';
+  //        else return is_2_async(a).then(function(bool){
+  //            if (bool) return '2입니다.';
+  //            else return '1도 아니고 2도 아닙니다.';
+  //        });
+  //     });
+  // }
+  //
+  // test3(2).then(log);
+
+  // let test4 =
+  //     _.if(is_1_async, function() {
+  //         return '1입니다.';
+  //     }).else_if(is_2_async, function(){
+  //         return '2입니다.';
+  //     }).else(function(){
+  //         return '1도 아니고 2도 아닙니다.';
+  //     });
+  // test4(2).then(log);
+
+  // let test6 = _.if(is_1_async, () => '1입니다.')
+  //     .else_if(is_2_async, () => '2입니다.')
+  //     .else(() => '1도 아니고 2도 아닙니다.');
+  // test6(2).then(log);
+
+  _.go(3,
+    _.if(is_1_async, _.c('1입니다.'))
+        .else_if(is_2_async, _.c('2입니다.'))
+        .else(_.c('1도 아니고 2도 아닙니다.')),
+        log);
+
+</script>
+</body>
+</html>

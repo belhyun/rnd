@@ -171,6 +171,20 @@
                 _(sub, _, 10),
                 _(mul, 1000),
                 console.log);
+
+            log("20180819");
+            _.go(null,
+                function() {
+                    log(1);
+                }, function(){
+                    log(2);
+                }, function(){
+                    return _.stop();
+                }, function(){
+                    log(3);
+                }, function(){
+                    log(4);
+                });
         })();
     </script>
 </body>
