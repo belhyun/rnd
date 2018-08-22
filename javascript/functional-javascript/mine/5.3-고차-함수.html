@@ -49,13 +49,72 @@
   // });
   // log(mult_all(10, 10, 2, [1,2,3]));
 
-  let mult_all2 = _.map(__(
-      _.args,
-      _.initial(2),
-      _.reduce(mult)
-  ));
+  // let mult_all2 = _.map(__(
+  //     _.args,
+  //     _.initial(2),
+  //     _.reduce(mult)
+  // ));
+  //
+  // log(mult_all2(10, 10, 2, [1, 2, 3]));
 
-  log(mult_all2(10, 10, 2, [1, 2, 3]));
+  _.go(_.all(10, 5, [
+
+      function(a, b) {
+        return a + b;
+      },
+      function(a, b) {
+        return a - b;
+      },
+      function(a, b) {
+        return a * b;
+      }
+
+  ]), log);
+
+    _.go(_.spread(10, 5, [
+
+        function(a) {
+            return a * a;
+        },
+        function(b) {
+            return b * b;
+        }
+    ]), log);
+
+
+    _.go(10,
+      _.all(
+          function(a) {
+              return new Promise(function(resolve) {
+                  setTimeout(function() {
+                      resolve(a + 5);
+                  }, 2000);
+              });
+          },
+          function(a) {
+              return a - 5;
+          },
+          function(a) {
+              return a * 5;
+          }
+
+      ),
+      _.spread(
+          function(a) {
+              return a + 1;
+          },
+          _.callback(function(b, next) {
+              setTimeout(function() {
+                  next(b + 2);
+              }, 2000);
+          }),
+          function(c) {
+              return c + 3;
+          }
+      ),
+      log
+    );
+
 
 </script>
 
