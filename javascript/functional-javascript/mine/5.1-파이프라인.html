@@ -48,6 +48,144 @@
 
         log(_.go(_.mr(2, 3), (a, b) => a + b, a => a * a));
 
+        log("------20180816-----");
+        let products = [
+            { id: 1, name: "후드 집업", discounted_price: 6000, price: 10000  },
+            { id: 2, name: "코잼 후드티", discounted_price: 8000, price: 8000  },
+            { id: 3, name: "A1 반팔티", discounted_price: 6000, price: 6000  },
+            { id: 4, name: "코잼 반팔티", discounted_price: 5000, price: 6000  }
+        ];
+
+        _.go(products, _.filter(function(p){
+            return p.discounted_price < p.price;
+        }),
+        _.sortBy('discounted_price'),
+        _.first,
+        _.val('name'),
+        log);
+
+        _.go(products, _.filter(function(p){
+            return p.discounted_price < p.price;
+
+        }), _.map(_.pipe(_.idtt, _.pick(['id', 'name']), _.values)), log);
+
+        _.go(products, _.filter(function(p){
+            return p.discounted_price < p.price;
+        }), _.map(p => _.go(p, _.pick(['id', 'name']), _.values)), log);
+
+        _.go(10, _.callback(function(a, next) {
+            setTimeout(function(){
+                next(a + 10);
+            }, 100)
+        }), function(a) {
+            log(a);
+        });
+
+        (function() {
+
+            function add(a, b, next) {
+                setTimeout(function () {
+                    next(a + b);
+                }, 1000);
+            }
+
+            function sub(a, b, next) {
+                setTimeout(function () {
+                    next(a - b);
+                }, 1000);
+            }
+
+            function mul(a, b, next) {
+                setTimeout(function () {
+                    next(a * b);
+                }, 1000);
+            }
+
+            function log(msg, next) {
+                setTimeout(function () {
+                    console.log(msg);
+                    next(msg);
+                }, 1000);
+            }
+
+            _.go(_.mr(5, 10), _.callback(
+                function(a, b, next) {
+                    add(a, b, next);
+                },
+                function(result, next) {
+                    sub(result, 10, next);
+                },
+                function(result, next) {
+                    mul(result, 10, next);
+                },
+                function(result, next) {
+                    log(result, next);
+                }
+            ));
+
+            add = _.callback(function(a, b, next) {
+                setTimeout(function(){
+                    next(a + b);
+                }, 1000);
+            });
+
+            sub = _.callback(function(a, b, next) {
+                setTimeout(function(){
+                    next(a - b);
+                }, 1000);
+            });
+            mul = _.callback(function(a, b, next) {
+                setTimeout(function() {
+                    next(a * b);
+                }, 1000);
+            });
+
+            log = _.callback(function(msg, next) {
+                setTimeout(function() {
+                    console.log(msg);
+                    next(msg);
+                }, 1000);
+            });
+
+            _.go(_.mr(5, 10),
+                add,
+                function(result) {
+                    return sub(result, 10);
+                },
+                function(result) {
+                    return mul(result, 100);
+                },
+                function(result) {
+                    return log(result);
+                }
+            );
+
+            _.go(_.mr(5, 10),
+                add,
+                _.partial(sub, _, 10),
+                _.partial(mul, 1000),
+                console.log);
+
+            _.go(_.mr(5, 10),
+                add,
+                _(sub, _, 10),
+                _(mul, 1000),
+                console.log);
+
+            log("20180819");
+            _.go(null,
+                function() {
+                    log(1);
+                }, function(){
+                    log(2);
+                }, function(){
+                    return _.stop();
+                }, function(){
+                    log(3);
+                }, function(){
+                    log(4);
+                });
+        })();
     </script>
 </body>
 </html>

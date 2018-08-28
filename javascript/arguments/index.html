@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+</head>
+<body>
+<script>
+    let log = console.log;
+
+    function abcd() {
+        log(arguments);
+        let args = Array.prototype.slice.call(arguments);
+
+        log(_.first(args));
+
+    }
+
+    abcd({
+        a:1,
+        b:2
+    })
+
+</script>
+</body>
+</html>
